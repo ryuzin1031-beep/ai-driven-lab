@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI駆動ラボ | 講座・サクセスラーニング</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy-900:#131f38;
+  --navy-800:#1a2947;
+  --navy-700:#22345a;
+  --navy-600:#2d4270;
+  --cream:#e9dfc9;
+  --cream-soft:#f1ead9;
+  --bg:#fbfaf7;
+  --card:#ffffff;
+  --ink:#1e2a44;
+  --ink-soft:#5b6478;
+  --line:#e6e2d8;
+  --accent:#b5772e;
+  --accent-soft:#f3e3cb;
+  --green:#2e7d4f;
+  --green-soft:#e3f0e8;
+  --serif:"Shippori Mincho", serif;
+  --sans:"Noto Sans JP", sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);display:flex;min-height:100vh}
+
+/* ===== Sidebar ===== */
+.sidebar{width:242px;min-width:242px;background:linear-gradient(180deg,var(--navy-800),var(--navy-900));color:#fff;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;padding:20px 12px}
+.brand{display:flex;align-items:center;gap:10px;padding:6px 8px 22px}
+.brand .mark{width:40px;height:40px;border-radius:50%;background:var(--cream);display:flex;align-items:center;justify-content:center;font-size:22px}
+.brand h1{font-family:var(--serif);font-size:19px;letter-spacing:.06em}
+.brand small{display:block;font-family:var(--sans);font-size:9px;letter-spacing:.28em;color:#aab4c9;font-weight:400}
+.nav{display:flex;flex-direction:column;gap:6px}
+.nav button{display:flex;align-items:center;gap:10px;width:100%;padding:12px 14px;border:0;border-radius:8px;background:transparent;color:#c9d1e2;font-family:var(--sans);font-size:14px;font-weight:500;cursor:pointer;text-align:left;transition:background .15s}
+.nav button:hover{background:rgba(255,255,255,.08)}
+.nav button.active{background:var(--cream);color:var(--navy-900);font-weight:700}
+.nav .ico{font-size:15px;width:18px;text-align:center}
+.side-foot{margin-top:auto;border-top:1px solid rgba(255,255,255,.14);padding:14px 8px 4px}
+.side-foot .me{display:flex;align-items:center;gap:10px}
+.side-foot .avatar{width:32px;height:32px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px}
+.side-foot .who b{display:block;font-size:13px}
+.side-foot .who span{font-size:11px;color:#aab4c9}
+.admin-link{background:none;border:0;color:#8fa0c0;font-size:11px;cursor:pointer;margin-top:10px;padding:2px 0;font-family:var(--sans);text-decoration:underline}
+.admin-link:hover{color:#c9d1e2}
+.admin-chip[hidden]{display:none}
+.admin-chip{display:inline-flex;align-items:center;gap:6px;background:var(--accent);color:#fff;font-size:11px;font-weight:700;padding:3px 10px;border-radius:999px;margin-top:8px}
+
+/* ===== Admin bar ===== */
+.admin-bar{display:none;align-items:center;gap:12px;background:var(--navy-800);color:#fff;border-radius:10px;padding:12px 18px;margin-bottom:28px;flex-wrap:wrap}
+body.admin .admin-bar{display:flex}
+.admin-bar b{font-size:13px}
+.admin-bar .spacer{flex:1}
+.abtn{border:1px solid rgba(255,255,255,.35);background:transparent;color:#fff;border-radius:7px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans)}
+.abtn:hover{background:rgba(255,255,255,.12)}
+.admin-only{display:none !important}
+body.admin .admin-only{display:inline-flex !important}
+body.admin .admin-only.block{display:block !important}
+body.admin .admin-only.flexrow{display:flex !important}
+
+/* ===== Main ===== */
+.main{flex:1;min-width:0;padding:44px 56px 80px;max-width:1360px}
+.kicker{display:flex;align-items:center;gap:12px;color:var(--accent);font-size:12px;font-weight:700;letter-spacing:.34em}
+.kicker::before{content:"";width:34px;height:3px;background:var(--accent);border-radius:2px}
+.page-title{font-family:var(--serif);font-size:38px;margin:14px 0 12px;color:var(--navy-900)}
+.page-lead{color:var(--ink-soft);font-size:14px;line-height:1.9;max-width:560px}
+
+/* ===== Course cards ===== */
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:26px;margin-top:34px}
+.course-card{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:visible;box-shadow:0 2px 10px rgba(20,32,60,.05);display:flex;flex-direction:column;transition:transform .15s,box-shadow .15s;position:relative}
+.course-card:hover{transform:translateY(-3px);box-shadow:0 10px 26px rgba(20,32,60,.10)}
+.thumb{position:relative;border-radius:12px 12px 0 0;background:linear-gradient(150deg,#fdfcf9,#f2ecdf);border-bottom:1px solid var(--line);padding:26px 22px 34px;min-height:150px}
+.thumb::before{content:"";position:absolute;inset:0 0 auto 0;height:5px;border-radius:12px 12px 0 0;background:linear-gradient(90deg,var(--navy-800) 55%,var(--accent) 55%)}
+.thumb .th-kicker{font-size:9px;letter-spacing:.22em;color:var(--accent);font-weight:700}
+.thumb h3{font-family:var(--serif);font-size:17px;line-height:1.55;color:var(--navy-800);margin-top:8px}
+.thumb .mascot{position:absolute;right:16px;bottom:10px;font-size:38px}
+.badge{position:absolute;left:14px;bottom:-14px;background:var(--navy-800);color:#fff;font-size:13px;font-weight:700;padding:7px 16px;border-radius:6px;box-shadow:0 4px 10px rgba(19,31,56,.3)}
+.course-body{padding:26px 22px 22px;display:flex;flex-direction:column;flex:1}
+.course-body h2{font-family:var(--serif);font-size:23px;color:var(--navy-900)}
+.course-body .count{color:#9aa1b2;font-size:13px;margin:6px 0 10px}
+.course-body p{font-size:13.5px;line-height:1.8;color:var(--ink-soft);flex:1}
+.meta-row{display:flex;align-items:center;gap:10px;margin:16px 0 14px;font-size:12px;color:var(--ink-soft)}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;font-size:12px;font-weight:700}
+.pill.open{background:var(--green-soft);color:var(--green)}
+.pill.prep{background:#eceef2;color:#7a8296}
+.pill .dot{width:7px;height:7px;border-radius:50%;background:currentColor}
+.btn{display:block;width:100%;border:0;border-radius:8px;background:var(--navy-800);color:#fff;font-family:var(--sans);font-size:14.5px;font-weight:700;padding:14px;cursor:pointer;transition:background .15s}
+.btn:hover{background:var(--navy-600)}
+.btn.ghost{background:transparent;color:var(--navy-800);border:1.5px solid var(--navy-800)}
+.btn.ghost:hover{background:var(--cream-soft)}
+.btn.small{width:auto;padding:9px 18px;font-size:13px}
+.btn.danger{background:transparent;color:#b04338;border:1.5px solid #d8b7b3}
+.btn.danger:hover{background:#faf0ee}
+.edit-fab{position:absolute;top:14px;right:14px;z-index:2;border:0;background:#fff;color:var(--navy-800);border-radius:7px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.18);font-family:var(--sans)}
+.edit-fab:hover{background:var(--cream-soft)}
+.add-card{border:2px dashed #d0c9b6;border-radius:12px;min-height:280px;display:none;align-items:center;justify-content:center;flex-direction:column;gap:10px;color:var(--accent);font-weight:700;cursor:pointer;background:transparent;font-family:var(--sans);font-size:14px}
+.add-card:hover{background:var(--cream-soft)}
+body.admin .add-card{display:flex}
+
+/* ===== Lesson list ===== */
+.back-link{display:inline-flex;align-items:center;gap:6px;background:none;border:0;color:var(--accent);font-weight:700;font-size:13px;cursor:pointer;margin-bottom:18px;font-family:var(--sans)}
+.lesson-list{margin-top:30px;display:flex;flex-direction:column;gap:12px;max-width:860px}
+.lesson{display:flex;align-items:center;gap:18px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px 22px;cursor:pointer;transition:transform .12s,box-shadow .12s;text-align:left;width:100%;font-family:var(--sans)}
+.lesson.clickable:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(20,32,60,.10);border-color:#d8cfb8}
+.lesson.locked-row{cursor:default;opacity:.72}
+.lesson .num{font-family:var(--serif);font-size:20px;color:var(--accent);min-width:44px;font-weight:700}
+.lesson .l-info{flex:1}
+.lesson .l-info h4{font-size:15px;margin-bottom:4px;color:var(--ink)}
+.lesson .l-info span{font-size:12px;color:var(--ink-soft)}
+.lesson .kind{font-size:14px}
+.lesson .state{font-size:12px;font-weight:700;padding:5px 14px;border-radius:999px;white-space:nowrap}
+.state.ok{background:var(--green-soft);color:var(--green)}
+.state.locked{background:#eceef2;color:#7a8296}
+.l-admin{display:none;gap:6px}
+body.admin .l-admin{display:flex}
+.mini{border:1px solid var(--line);background:#fff;border-radius:6px;padding:5px 9px;font-size:12px;cursor:pointer;color:var(--ink-soft);font-family:var(--sans)}
+.mini:hover{background:var(--cream-soft);color:var(--navy-800)}
+.lesson-add{margin-top:16px}
+
+/* ===== Success Learning ===== */
+.sl-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.plan-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:24px;margin-top:32px}
+.plan-card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:26px;box-shadow:0 2px 10px rgba(20,32,60,.05)}
+.plan-card h3{font-family:var(--serif);font-size:20px;color:var(--navy-900);line-height:1.4}
+.plan-card .goal{font-size:13px;color:var(--ink-soft);margin:8px 0 4px;line-height:1.7}
+.plan-card .deadline{font-size:12px;color:var(--accent);font-weight:700;margin-bottom:16px}
+.plan-card .deadline.over{color:#b04338}
+.prog-wrap{margin:6px 0 18px}
+.prog-label{display:flex;justify-content:space-between;font-size:12px;color:var(--ink-soft);margin-bottom:6px}
+.prog-label b{color:var(--navy-800);font-size:14px}
+.prog-bar{height:10px;background:#ece8dd;border-radius:999px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--navy-600),var(--accent));border-radius:999px;transition:width .4s}
+.task{display:flex;align-items:center;gap:12px;padding:10px 4px;border-bottom:1px dashed var(--line);cursor:pointer}
+.task:last-of-type{border-bottom:0}
+.task input{width:18px;height:18px;accent-color:var(--navy-800);cursor:pointer}
+.task span{font-size:14px;flex:1}
+.task.done span{color:#a3a9b8;text-decoration:line-through}
+.plan-actions{display:flex;gap:10px;margin-top:18px}
+.empty{margin-top:40px;background:var(--cream-soft);border:1.5px dashed #d8cfb8;border-radius:14px;padding:56px 30px;text-align:center;color:var(--ink-soft)}
+.empty .big{font-size:40px;margin-bottom:12px}
+.empty p{font-size:14px;line-height:1.9}
+
+/* ===== Modal ===== */
+.overlay{position:fixed;inset:0;background:rgba(19,31,56,.55);display:none;align-items:flex-start;justify-content:center;padding:60px 20px;z-index:50;overflow:auto}
+.overlay.show{display:flex}
+.modal{background:#fff;border-radius:14px;width:100%;max-width:560px;padding:36px 38px;box-shadow:0 24px 60px rgba(0,0,0,.25)}
+.modal h2{font-family:var(--serif);font-size:24px;color:var(--navy-900);margin-bottom:24px}
+.field{margin-bottom:18px}
+.field label{display:block;font-size:13px;font-weight:700;margin-bottom:7px;color:var(--navy-800)}
+.field input[type=text],.field input[type=url],.field input[type=date],.field input[type=password],.field textarea,.field select{width:100%;border:1.5px solid var(--line);border-radius:8px;padding:11px 13px;font-family:var(--sans);font-size:14px;background:#fdfcfa;color:var(--ink)}
+.field input:focus,.field textarea:focus,.field select:focus{outline:none;border-color:var(--accent)}
+.field textarea{resize:vertical;min-height:70px}
+.field .hint{font-size:11.5px;color:var(--ink-soft);margin-top:5px}
+.field .check{display:flex;align-items:center;gap:9px;font-size:14px;cursor:pointer;font-weight:500}
+.field .check input{width:17px;height:17px;accent-color:var(--navy-800)}
+.task-input-row{display:flex;gap:8px;margin-bottom:8px}
+.task-input-row input{flex:1;border:1.5px solid var(--line);border-radius:8px;padding:9px 12px;font-size:14px;font-family:var(--sans);background:#fdfcfa}
+.task-input-row button{border:0;background:#eceef2;color:#7a8296;border-radius:8px;width:38px;cursor:pointer;font-size:16px}
+.add-task{background:none;border:0;color:var(--accent);font-weight:700;font-size:13px;cursor:pointer;padding:4px 0;font-family:var(--sans)}
+.modal-actions{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap}
+.modal-actions .btn{flex:1;min-width:140px}
+
+/* ===== Video modal ===== */
+.video-modal{background:#000;border-radius:14px;width:100%;max-width:880px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.4)}
+.video-head{display:flex;align-items:center;justify-content:space-between;gap:14px;background:var(--navy-900);color:#fff;padding:14px 20px}
+.video-head h3{font-size:15px;font-weight:700}
+.video-head button{background:none;border:0;color:#aab4c9;font-size:22px;cursor:pointer;line-height:1}
+.video-head button:hover{color:#fff}
+.video-frame{position:relative;padding-top:56.25%}
+.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+
+/* ===== Series ===== */
+.series-head{display:flex;align-items:baseline;gap:14px;margin:54px 0 0;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.series-head:first-of-type{margin-top:34px}
+.series-head h3{font-family:var(--serif);font-size:22px;color:var(--navy-900)}
+.series-head span{font-size:12.5px;color:var(--ink-soft)}
+.series-head + .card-grid{margin-top:26px}
+
+/* ===== Article (教材ページ) ===== */
+.lesson .num.small{font-size:16px}
+.lesson.done-row .state.ok{background:var(--navy-800);color:#fff}
+.article-wrap{max-width:860px;margin-top:24px}
+.art-meta{display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;color:var(--ink-soft);margin-top:-2px}
+.goal-box{background:var(--navy-800);color:#fff;border-radius:12px 12px 0 0;padding:18px 26px;font-size:14px;line-height:1.8}
+.goal-box b{display:block;font-size:11px;letter-spacing:.24em;color:var(--cream);margin-bottom:4px}
+.article{background:#fff;border:1px solid var(--line);border-top:0;border-radius:0 0 12px 12px;padding:40px 52px 48px;line-height:1.95;font-size:15px;color:var(--ink)}
+.article.no-goal{border-top:1px solid var(--line);border-radius:12px}
+.article h2{font-family:var(--serif);font-size:24px;color:var(--navy-900);margin:46px 0 16px;padding-bottom:8px;border-bottom:2px solid var(--cream)}
+.article h2:first-child{margin-top:0}
+.article h3{font-size:16.5px;color:var(--navy-700);margin:30px 0 10px;padding-left:12px;border-left:4px solid var(--accent)}
+.article p{margin:0 0 16px}
+.article ul,.article ol{margin:0 0 18px 1.5em}
+.article li{margin:5px 0}
+.article li.lv{list-style:circle}
+.article strong{color:var(--navy-900);background:linear-gradient(transparent 62%,var(--accent-soft) 62%)}
+.article a{color:var(--accent);font-weight:700}
+.article .tbl{overflow-x:auto;margin:6px 0 22px}
+.article table{width:100%;border-collapse:collapse;font-size:13.5px;line-height:1.7}
+.article th{background:var(--navy-800);color:#fff;text-align:left;padding:9px 12px;font-weight:700;white-space:nowrap}
+.article td{border:1px solid var(--line);padding:9px 12px;vertical-align:top}
+.article tr:nth-child(even) td{background:#faf8f3}
+.callout{border-left:4px solid var(--accent);background:var(--cream-soft);border-radius:6px;padding:16px 22px;margin:8px 0 24px}
+.callout > :last-child{margin-bottom:0}
+.callout .ct{display:block;font-weight:700;color:var(--accent);margin-bottom:6px;font-size:14px}
+.callout.work{border-color:var(--green);background:var(--green-soft)}.callout.work .ct{color:var(--green)}
+.callout.ng{border-color:#b04338;background:#faf0ee}.callout.ng .ct{color:#b04338}
+.callout.note{border-color:var(--navy-600);background:#eef1f7}.callout.note .ct{color:var(--navy-600)}
+details.answer{border:1px solid var(--line);border-radius:8px;padding:12px 18px;margin:8px 0 24px;background:#fdfcfa}
+details.answer summary{cursor:pointer;font-weight:700;color:var(--navy-700);font-size:14px}
+details.answer[open] summary{margin-bottom:10px}
+.art-actions{display:flex;gap:12px;margin-top:22px;flex-wrap:wrap}
+.art-actions .btn{flex:1;min-width:160px}
+.art-loading{padding:40px;text-align:center;color:var(--ink-soft)}
+
+@media (max-width:760px){
+  .article{padding:26px 20px 32px;font-size:14.5px}
+  .goal-box{padding:16px 20px}
+  body{flex-direction:column}
+  .sidebar{width:100%;min-width:0;height:auto;position:static;flex-direction:row;align-items:center;padding:12px 16px;flex-wrap:wrap}
+  .brand{padding:0 12px 0 0}
+  .nav{flex-direction:row;flex:1}
+  .side-foot{display:none}
+  .main{padding:28px 20px 60px}
+  .page-title{font-size:28px}
+}
+/* ===== スマホ最適化 ===== */
+@media (max-width:760px){
+  html{-webkit-text-size-adjust:100%}
+  .sidebar{position:sticky;top:0;z-index:40;padding:10px 14px;gap:8px;flex-direction:column;align-items:stretch}
+  .brand{padding:0;gap:8px}
+  .brand .mark{width:32px;height:32px;font-size:18px}
+  .brand h1{font-size:16px}
+  .brand small{font-size:9px}
+  .nav{flex-direction:row;gap:6px}
+  .nav button{flex:1;justify-content:center;padding:9px 8px;font-size:13px;white-space:nowrap}
+  .main{padding:22px 16px 60px}
+  .kicker{font-size:11px}
+  .page-title{font-size:24px;line-height:1.4}
+  .page-lead{font-size:13.5px}
+  .series-head{flex-direction:column;align-items:flex-start;gap:6px;margin-top:40px}
+  .series-head h3{font-size:19px;line-height:1.45}
+  .card-grid,.plan-grid{grid-template-columns:1fr;gap:18px}
+  .lesson{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;padding:14px 16px}
+  .lesson .num{min-width:0;font-size:17px;grid-row:span 2}
+  .lesson .state{justify-self:start;padding:3px 10px;font-size:11px;grid-column:2}
+  .lesson .l-admin{grid-column:2}
+  .lesson .l-info h4{font-size:14px;line-height:1.5}
+  .article{padding:22px 16px 28px;font-size:14.5px;line-height:1.9}
+  .article h2{font-size:19px;margin:34px 0 12px}
+  .article h3{font-size:15px}
+  .article th,.article td{padding:7px 9px;font-size:12.5px}
+  .article th{white-space:normal}
+  .callout{padding:14px 16px}
+  .goal-box{padding:14px 16px;font-size:13.5px}
+  .art-actions{flex-direction:column}
+  .art-actions .btn{min-width:0;width:100%}
+  .art-actions #artDone{order:-1}
+  .art-actions .is-none{display:none}
+  .overlay{padding:16px 10px}
+  .modal{padding:24px 18px}
+  .admin-bar{padding:10px 12px}
+}
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="brand">
+    <div class="mark">🦫</div>
+    <div>
+      <h1>AI駆動ラボ</h1>
+      <small>AI-DRIVEN LAB</small>
+    </div>
+  </div>
+  <nav class="nav">
+    <button id="nav-courses" class="active" onclick="showView('courses')"><span class="ico">☰</span>講座</button>
+    <button id="nav-success" onclick="showView('success')"><span class="ico">◎</span>サクセスラーニング</button>
+  </nav>
+  <div class="side-foot">
+    <div class="me">
+      <div class="avatar">N</div>
+      <div class="who"><b>メンバー</b><span>受講中</span></div>
+    </div>
+    <span class="admin-chip" id="adminChip" hidden>🔧 管理者モード</span>
+    <button class="admin-link" id="adminToggle" onclick="toggleAdmin()">管理者ログイン</button>
+  </div>
+</aside>
+
+<main class="main">
+
+  <!-- ===== 講座一覧 ===== -->
+  <section id="view-courses">
+    <div class="admin-bar">
+      <b>🔧 管理者モード：講座の追加・編集・削除ができます</b>
+      <span class="spacer"></span>
+      <button class="abtn" onclick="exportData()">データを書き出す</button>
+      <button class="abtn" onclick="document.getElementById('importFile').click()">データを読み込む</button>
+      <button class="abtn" onclick="resetCourses()">初期データに戻す</button>
+      <input type="file" id="importFile" accept=".json" hidden onchange="importData(this)">
+    </div>
+    <div class="kicker">COURSES</div>
+    <h2 class="page-title">講座一覧</h2>
+    <p class="page-lead">AI時代を、武器を持ってサバイブする。コースを順番に見ていけば、環境を整えるところから成果物を1つ完成させるところまでたどり着けます。</p>
+    <div class="card-grid" id="courseGrid"></div>
+  </section>
+
+  <!-- ===== 講座詳細（コンテンツ一覧） ===== -->
+  <section id="view-detail" hidden>
+    <button class="back-link" onclick="showView('courses')">← 講座一覧に戻る</button>
+    <div class="kicker">LESSONS</div>
+    <h2 class="page-title" id="detailTitle"></h2>
+    <p class="page-lead" id="detailDesc"></p>
+    <div class="lesson-list" id="lessonList"></div>
+    <div class="lesson-add admin-only block" style="max-width:860px">
+      <button class="btn ghost" onclick="openLessonModal()">＋ コンテンツを追加</button>
+    </div>
+  </section>
+
+  <!-- ===== 教材ページ ===== -->
+  <section id="view-lesson" hidden>
+    <button class="back-link" onclick="openCourse(currentCourseId)">← レッスン一覧に戻る</button>
+    <div class="kicker" id="artKicker"></div>
+    <h2 class="page-title" id="artTitle"></h2>
+    <div class="art-meta" id="artMeta"></div>
+    <div class="article-wrap">
+      <div class="goal-box" id="artGoal"></div>
+      <article class="article" id="artBody"></article>
+      <div class="art-actions">
+        <button class="btn ghost" id="artPrev">← 前のレッスン</button>
+        <button class="btn" id="artDone" onclick="toggleDone()">このレッスンを完了にする</button>
+        <button class="btn ghost" id="artNext">次のレッスン →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== サクセスラーニング ===== -->
+  <section id="view-success" hidden>
+    <div class="sl-head">
+      <div>
+        <div class="kicker">SUCCESS LEARNING</div>
+        <h2 class="page-title">サクセスラーニング</h2>
+        <p class="page-lead">学習計画を自分で立てて、進捗をひと目で確認。ゴールから逆算して、今日やることを決めましょう。</p>
+      </div>
+      <button class="btn small" onclick="openModal()">＋ 新しい学習計画を作る</button>
+    </div>
+    <div class="plan-grid" id="planGrid"></div>
+    <div class="empty" id="planEmpty" hidden>
+      <div class="big">🦫</div>
+      <p>まだ学習計画がありません。<br>「新しい学習計画を作る」から、最初のゴールを設定しましょう。</p>
+    </div>
+  </section>
+</main>
+
+<!-- ===== 学習計画モーダル ===== -->
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <h2 id="modalTitle">新しい学習計画</h2>
+    <div class="field">
+      <label>計画のタイトル</label>
+      <input type="text" id="fTitle" placeholder="例：Cowork入門を2週間で修了する">
+    </div>
+    <div class="field">
+      <label>ゴール（達成したい状態）</label>
+      <textarea id="fGoal" placeholder="例：修了課題の成果物を1つ完成させて公開する"></textarea>
+    </div>
+    <div class="field">
+      <label>目標期日</label>
+      <input type="date" id="fDeadline">
+    </div>
+    <div class="field">
+      <label>講座からタスクを取り込む（任意）</label>
+      <select id="fCourse" onchange="importCourseTasks()"></select>
+      <div class="hint">講座を選ぶと、各回のコンテンツがタスクとして自動で追加されます。</div>
+    </div>
+    <div class="field">
+      <label>タスク</label>
+      <div id="taskInputs"></div>
+      <button class="add-task" onclick="addTaskRow()">＋ タスクを追加</button>
+    </div>
+    <div class="modal-actions">
+      <button class="btn ghost" onclick="closeModal('overlay')">キャンセル</button>
+      <button class="btn" onclick="savePlan()">保存する</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 講座編集モーダル（管理者） ===== -->
+<div class="overlay" id="courseOverlay">
+  <div class="modal">
+    <h2 id="courseModalTitle">講座を編集</h2>
+    <div class="field">
+      <label>講座タイトル</label>
+      <input type="text" id="cTitle" placeholder="例：Cowork 入門">
+    </div>
+    <div class="field">
+      <label>バッジ（カード左下の帯）</label>
+      <input type="text" id="cBadge" placeholder="例：Cowork 入門">
+    </div>
+    <div class="field">
+      <label>サムネイルの見出し</label>
+      <input type="text" id="cThumb" placeholder="例：このコースで手に入るものと、いま書き出しておくこと">
+    </div>
+    <div class="field">
+      <label>説明文</label>
+      <textarea id="cDesc" placeholder="この講座で学べることを2〜3行で"></textarea>
+      <div class="hint">回数・視聴可能本数はコンテンツの登録内容から自動で表示されます。</div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn danger" id="cDeleteBtn" onclick="deleteCourse()">講座を削除</button>
+      <button class="btn ghost" onclick="closeModal('courseOverlay')">キャンセル</button>
+      <button class="btn" onclick="saveCourse()">保存する</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== コンテンツ編集モーダル（管理者） ===== -->
+<div class="overlay" id="lessonOverlay">
+  <div class="modal">
+    <h2 id="lessonModalTitle">コンテンツを編集</h2>
+    <div class="field">
+      <label>タイトル</label>
+      <input type="text" id="lTitle" placeholder="例：はじめての依頼：ファイル整理を任せてみる">
+    </div>
+    <div class="field">
+      <label>再生時間・目安（表示用）</label>
+      <input type="text" id="lDur" placeholder="例：12分">
+    </div>
+    <div class="field">
+      <label>動画URL（YouTube / Vimeo / 埋め込みURL）</label>
+      <input type="url" id="lVideo" placeholder="例：https://www.youtube.com/watch?v=xxxxx">
+      <div class="hint">入力すると、タップしたときにこのページ内で動画が再生されます。</div>
+    </div>
+    <div class="field">
+      <label>リンクURL（外部ページに飛ばす場合）</label>
+      <input type="url" id="lUrl" placeholder="例：https://example.com/lesson1">
+      <div class="hint">動画URLが空のとき、タップするとこのURLを新しいタブで開きます。</div>
+    </div>
+    <div class="field">
+      <label class="check"><input type="checkbox" id="lOpen">公開する（オフの場合「準備中」と表示されます）</label>
+    </div>
+    <div class="modal-actions">
+      <button class="btn danger" id="lDeleteBtn" onclick="deleteLesson()">削除</button>
+      <button class="btn ghost" onclick="closeModal('lessonOverlay')">キャンセル</button>
+      <button class="btn" onclick="saveLesson()">保存する</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 動画再生モーダル ===== -->
+<div class="overlay" id="videoOverlay">
+  <div class="video-modal">
+    <div class="video-head">
+      <h3 id="videoTitle"></h3>
+      <button onclick="closeVideo()" title="閉じる">×</button>
+    </div>
+    <div class="video-frame"><iframe id="videoFrame" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div>
+  </div>
+</div>
+
+<script src="content/sns/courses.js"></script>
+<script src="content/ai/courses.js"></script>
+<script>
+/* =====================================================
+   管理者パスワード（ここを書き換えて変更できます）
+===================================================== */
+const ADMIN_PASSWORD = "aidl2026";
+
+/* ===== 初期講座データ（管理者が編集するとlocalStorageに保存され、そちらが優先されます） ===== */
+// 削除した講座（保存済みのデータからも取り除く）
+const REMOVED_COURSE_IDS = ["cowork-basic","cowork-adv","code-basic","code-adv"];
+const DEFAULT_COURSES = [];
+
+// SNS運用シリーズの講座データは content/sns/courses.js で定義（DEFAULT_COURSES に追加される）
+if(window.SNS_COURSES) DEFAULT_COURSES.push(...window.SNS_COURSES);
+// AI活用シリーズの講座データは content/ai/courses.js で定義
+if(window.AI_COURSES) DEFAULT_COURSES.push(...window.AI_COURSES);
+
+const LS_PLANS = "aidl_plans_v1";
+const LS_COURSES = "aidl_courses_v1";
+const SS_ADMIN = "aidl_admin";
+
+let courses = loadCourses();
+let plans = JSON.parse(localStorage.getItem(LS_PLANS) || "[]");
+let editingId = null;          // 学習計画
+let editingCourseId = null;    // 講座
+let editingLessonIdx = null;   // コンテンツ
+let currentCourseId = null;    // 表示中の講座
+
+function loadCourses(){
+  const defs = JSON.parse(JSON.stringify(DEFAULT_COURSES));
+  let saved = null;
+  try{ saved = JSON.parse(localStorage.getItem(LS_COURSES)); }catch(e){}
+  if(Array.isArray(saved)) saved = saved.filter(c => !REMOVED_COURSE_IDS.includes(c.id));
+  if(!Array.isArray(saved) || !saved.length) return defs;
+  // managed:true の講座は、タイトル・説明・教材レッスンをコード側の内容で上書きする
+  // （管理者が追加したレッスンや、登録した動画URL・リンクURLは残す）
+  defs.forEach(d => {
+    const s = saved.find(x => x.id === d.id);
+    if(!s){ saved.push(d); return; }
+    if(!d.managed) return;
+    ["title","badge","thumbTitle","desc","series","seriesDesc","managed"].forEach(k => s[k] = d[k]);
+    const extra = s.lessons.filter(l => !l.doc);
+    s.lessons = d.lessons.map(dl => {
+      const old = s.lessons.find(l => l.doc && l.doc === dl.doc) || {};
+      return Object.assign({}, dl, {video: old.video || dl.video || "", url: old.url || dl.url || ""});
+    }).concat(extra);
+  });
+  return saved;
+}
+function persistCourses(){ localStorage.setItem(LS_COURSES, JSON.stringify(courses)); }
+function persistPlans(){ localStorage.setItem(LS_PLANS, JSON.stringify(plans)); }
+function esc(s){ const d = document.createElement("div"); d.textContent = s || ""; return d.innerHTML; }
+
+/* ===== 管理者モード ===== */
+function isAdmin(){ return sessionStorage.getItem(SS_ADMIN) === "1"; }
+function applyAdminUI(){
+  document.body.classList.toggle("admin", isAdmin());
+  document.getElementById("adminChip").hidden = !isAdmin();
+  document.getElementById("adminToggle").textContent = isAdmin() ? "管理者モードを終了" : "管理者ログイン";
+}
+function toggleAdmin(){
+  if(isAdmin()){
+    sessionStorage.removeItem(SS_ADMIN);
+  }else{
+    const pw = prompt("管理者パスワードを入力してください");
+    if(pw === null) return;
+    if(pw !== ADMIN_PASSWORD){ alert("パスワードが違います"); return; }
+    sessionStorage.setItem(SS_ADMIN, "1");
+  }
+  applyAdminUI();
+  renderCourses();
+  if(!document.getElementById("view-detail").hidden && currentCourseId) openCourse(currentCourseId);
+}
+
+/* ===== ビュー切り替え ===== */
+function showView(name){
+  document.getElementById("view-courses").hidden = name !== "courses";
+  document.getElementById("view-detail").hidden = name !== "detail";
+  document.getElementById("view-success").hidden = name !== "success";
+  document.getElementById("view-lesson").hidden = name !== "lesson";
+  document.getElementById("nav-courses").classList.toggle("active", name === "courses" || name === "detail" || name === "lesson");
+  document.getElementById("nav-success").classList.toggle("active", name === "success");
+  if(name === "success") renderPlans();
+  window.scrollTo(0,0);
+}
+
+/* ===== 講座一覧 ===== */
+function courseStatus(c){
+  const openCount = c.lessons.filter(l => l.open).length;
+  return openCount > 0
+    ? {type:"open", label:`${openCount}本 視聴可`}
+    : {type:"prep", label:"準備中"};
+}
+function courseCard(c){
+    const st = courseStatus(c);
+    return `
+    <article class="course-card">
+      ${isAdmin() ? `<button class="edit-fab" onclick="openCourseModal('${c.id}')">✏ 編集</button>` : ""}
+      <div class="thumb">
+        <div class="th-kicker">${esc(c.badge).toUpperCase()} ・ LESSON 01</div>
+        <h3>${esc(c.thumbTitle)}</h3>
+        <div class="mascot">🦫</div>
+        <div class="badge">${esc(c.badge)}</div>
+      </div>
+      <div class="course-body">
+        <h2>${esc(c.title)}</h2>
+        <div class="count">全${c.lessons.length}回</div>
+        <p>${esc(c.desc)}</p>
+        <div class="meta-row">
+          <span class="pill ${st.type}"><span class="dot"></span>${st.label}</span>
+          <span>／ 全${c.lessons.length}本</span>
+        </div>
+        <button class="btn" onclick="openCourse('${c.id}')">講座を受講する</button>
+      </div>
+    </article>`;
+}
+function renderCourses(){
+  const groups = [];
+  courses.forEach(c => {
+    const name = c.series || "AI活用講座";
+    let g = groups.find(x => x.name === name);
+    if(!g){ g = {name, desc:c.seriesDesc || "", items:[]}; groups.push(g); }
+    g.items.push(c);
+  });
+  const multi = groups.length > 1;
+  const host = document.getElementById("courseGrid");
+  host.className = "";
+  host.innerHTML = groups.map((g,gi) =>
+    (multi ? `<div class="series-head"><h3>${esc(g.name)}</h3><span>${esc(g.desc)}</span></div>` : "") +
+    `<div class="card-grid">${g.items.map(courseCard).join("")}${gi === groups.length-1 ? addCardHtml() : ""}</div>`
+  ).join("");
+  refreshCourseSelect();
+}
+function addCardHtml(){ return `
+    <button class="add-card" onclick="openCourseModal()">
+      <span style="font-size:32px">＋</span>新しい講座を追加
+    </button>`;
+}
+
+/* ===== 講座詳細（コンテンツ一覧） ===== */
+function openCourse(id){
+  const c = courses.find(x => x.id === id);
+  if(!c) return;
+  currentCourseId = id;
+  document.getElementById("detailTitle").textContent = c.title;
+  document.getElementById("detailDesc").textContent = c.desc;
+  document.getElementById("lessonList").innerHTML = c.lessons.map((l,i) => {
+    const clickable = l.open && (l.video || l.url || l.doc);
+    const kind = l.doc ? "📖" : l.video ? "▶" : (l.url ? "🔗" : "");
+    const done = isDone(c.id, l);
+    return `
+    <div class="lesson ${clickable ? "clickable" : ""} ${!l.open ? "locked-row" : ""} ${done ? "done-row" : ""}"
+         ${clickable ? `onclick="playLesson('${c.id}',${i})"` : ""}>
+      <div class="num ${l.no ? "small" : ""}">${l.no ? esc(l.no) : String(i+1).padStart(2,"0")}</div>
+      <div class="l-info">
+        <h4>${kind ? `<span class="kind">${kind}</span> ` : ""}${esc(l.t)}</h4>
+        <span>${esc(l.d)}</span>
+      </div>
+      <span class="state ${l.open ? "ok" : "locked"}">${!l.open ? "準備中" : done ? "✓ 完了" : l.doc ? "教材を読む" : l.video ? "動画を見る" : l.url ? "ページを開く" : "公開中"}</span>
+      <div class="l-admin" onclick="event.stopPropagation()">
+        <button class="mini" title="上へ" onclick="moveLesson(${i},-1)">↑</button>
+        <button class="mini" title="下へ" onclick="moveLesson(${i},1)">↓</button>
+        <button class="mini" onclick="openLessonModal(${i})">✏ 編集</button>
+      </div>
+    </div>`;
+  }).join("");
+  showView("detail");
+}
+
+/* ===== コンテンツ再生・リンク ===== */
+function toEmbedUrl(u){
+  let m;
+  if(m = u.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/shorts\/)([\w-]{6,})/))
+    return `https://www.youtube.com/embed/${m[1]}?autoplay=1`;
+  if(m = u.match(/vimeo\.com\/(\d+)/))
+    return `https://player.vimeo.com/video/${m[1]}?autoplay=1`;
+  return u; // すでに埋め込みURLの場合はそのまま
+}
+function playLesson(courseId, idx){
+  const c = courses.find(x => x.id === courseId);
+  const l = c.lessons[idx];
+  if(l.doc){ openArticle(courseId, idx); return; }
+  if(l.video){
+    document.getElementById("videoTitle").textContent = l.t;
+    document.getElementById("videoFrame").src = toEmbedUrl(l.video.trim());
+    document.getElementById("videoOverlay").classList.add("show");
+  }else if(l.url){
+    window.open(l.url, "_blank", "noopener");
+  }
+}
+function closeVideo(){
+  document.getElementById("videoOverlay").classList.remove("show");
+  document.getElementById("videoFrame").src = "";
+}
+
+/* ===== 講座の追加・編集・削除（管理者） ===== */
+function openCourseModal(id){
+  editingCourseId = id || null;
+  const c = id ? courses.find(x => x.id === id) : null;
+  document.getElementById("courseModalTitle").textContent = c ? "講座を編集" : "新しい講座";
+  document.getElementById("cTitle").value = c ? c.title : "";
+  document.getElementById("cBadge").value = c ? c.badge : "";
+  document.getElementById("cThumb").value = c ? c.thumbTitle : "";
+  document.getElementById("cDesc").value = c ? c.desc : "";
+  document.getElementById("cDeleteBtn").style.display = c ? "" : "none";
+  document.getElementById("courseOverlay").classList.add("show");
+}
+function saveCourse(){
+  const title = document.getElementById("cTitle").value.trim();
+  if(!title){ alert("講座タイトルを入力してください"); return; }
+  const data = {
+    title,
+    badge: document.getElementById("cBadge").value.trim() || title,
+    thumbTitle: document.getElementById("cThumb").value.trim() || title,
+    desc: document.getElementById("cDesc").value.trim(),
+  };
+  if(editingCourseId){
+    Object.assign(courses.find(x => x.id === editingCourseId), data);
+  }else{
+    courses.push({ id:"c" + Date.now(), ...data, lessons:[] });
+  }
+  persistCourses(); closeModal("courseOverlay"); renderCourses();
+  if(!document.getElementById("view-detail").hidden && currentCourseId) openCourse(currentCourseId);
+}
+function deleteCourse(){
+  if(!confirm("この講座を削除しますか？（コンテンツもすべて削除されます）")) return;
+  courses = courses.filter(x => x.id !== editingCourseId);
+  persistCourses(); closeModal("courseOverlay"); renderCourses(); showView("courses");
+}
+
+/* ===== コンテンツの追加・編集・削除（管理者） ===== */
+function openLessonModal(idx){
+  editingLessonIdx = (idx === undefined) ? null : idx;
+  const c = courses.find(x => x.id === currentCourseId);
+  const l = editingLessonIdx !== null ? c.lessons[editingLessonIdx] : null;
+  document.getElementById("lessonModalTitle").textContent = l ? "コンテンツを編集" : "コンテンツを追加";
+  document.getElementById("lTitle").value = l ? l.t : "";
+  document.getElementById("lDur").value = l ? l.d : "";
+  document.getElementById("lVideo").value = l ? (l.video || "") : "";
+  document.getElementById("lUrl").value = l ? (l.url || "") : "";
+  document.getElementById("lOpen").checked = l ? !!l.open : true;
+  document.getElementById("lDeleteBtn").style.display = l ? "" : "none";
+  document.getElementById("lessonOverlay").classList.add("show");
+}
+function saveLesson(){
+  const t = document.getElementById("lTitle").value.trim();
+  if(!t){ alert("タイトルを入力してください"); return; }
+  const c = courses.find(x => x.id === currentCourseId);
+  const data = {
+    t,
+    d: document.getElementById("lDur").value.trim(),
+    video: document.getElementById("lVideo").value.trim(),
+    url: document.getElementById("lUrl").value.trim(),
+    open: document.getElementById("lOpen").checked,
+  };
+  if(editingLessonIdx !== null) c.lessons[editingLessonIdx] = Object.assign({}, c.lessons[editingLessonIdx], data);
+  else c.lessons.push(data);
+  persistCourses(); closeModal("lessonOverlay"); openCourse(currentCourseId); renderCourses();
+}
+function deleteLesson(){
+  if(!confirm("このコンテンツを削除しますか？")) return;
+  const c = courses.find(x => x.id === currentCourseId);
+  c.lessons.splice(editingLessonIdx, 1);
+  persistCourses(); closeModal("lessonOverlay"); openCourse(currentCourseId); renderCourses();
+}
+function moveLesson(idx, dir){
+  const c = courses.find(x => x.id === currentCourseId);
+  const j = idx + dir;
+  if(j < 0 || j >= c.lessons.length) return;
+  [c.lessons[idx], c.lessons[j]] = [c.lessons[j], c.lessons[idx]];
+  persistCourses(); openCourse(currentCourseId);
+}
+
+/* ===== 教材ページ =====
+   教材は content/<doc>.js に1レッスン1ファイルで置く。
+   ファイルの中身は AIDL_DOC({key, goal, time, body}) の呼び出し（body はMarkdown）。
+   <script> で読み込むので、file:// で開いても動く。 */
+const DOCS = {};
+window.AIDL_DOC = d => { DOCS[d.key] = d; };
+function loadDoc(key){
+  if(DOCS[key]) return Promise.resolve(DOCS[key]);
+  return new Promise((ok, ng) => {
+    const s = document.createElement("script");
+    s.src = "content/" + key + ".js?v=" + Date.now();
+    s.onload = () => DOCS[key] ? ok(DOCS[key]) : ng();
+    s.onerror = ng;
+    document.head.appendChild(s);
+  });
+}
+function mdInline(s){
+  return esc(s)
+    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+    .replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, (m,t,u) => `<a href="${u}" target="_blank" rel="noopener">${t}</a>`);
+}
+function md(src){
+  const L = src.replace(/\r/g,"").split("\n"); const out = []; let i = 0;
+  const take = re => { const a = []; while(i < L.length && re.test(L[i])){ a.push(L[i]); i++; } return a; };
+  while(i < L.length){
+    const line = L[i];
+    if(!line.trim()){ i++; continue; }
+    let m;
+    if(m = line.match(/^(#{2,3}) (.*)/)){ out.push(`<h${m[1].length}>${mdInline(m[2])}</h${m[1].length}>`); i++; continue; }
+    if(/^\|/.test(line)){
+      const rows = take(/^\|/).filter(r => !/^\|[\s:|-]+\|$/.test(r))
+        .map(r => r.replace(/^\||\|$/g,"").split("|").map(c => c.trim()));
+      const [head, ...body] = rows;
+      out.push(`<div class="tbl"><table><thead><tr>${head.map(c=>`<th>${mdInline(c)}</th>`).join("")}</tr></thead><tbody>${
+        body.map(r=>`<tr>${r.map(c=>`<td>${mdInline(c).replace(/&lt;br&gt;/g,"<br>")}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`);
+      continue;
+    }
+    if(/^> ?/.test(line)){
+      const inner = take(/^>/).map(r => r.replace(/^> ?/,""));
+      let type = "point", title = "";
+      const t = inner[0] && inner[0].match(/^\[!(\w+)\]\s*(.*)/);
+      if(t){ type = t[1].toLowerCase(); title = t[2]; inner.shift(); }
+      if(type === "answer"){
+        out.push(`<details class="answer"><summary>${mdInline(title || "解答を見る")}</summary>${md(inner.join("\n"))}</details>`);
+      }else{
+        out.push(`<div class="callout ${type}">${title ? `<span class="ct">${mdInline(title)}</span>` : ""}${md(inner.join("\n"))}</div>`);
+      }
+      continue;
+    }
+    if(/^\s*- /.test(line)){ out.push("<ul>" + take(/^\s*- /).map(r=>{ const lv = Math.floor(r.match(/^\s*/)[0].length / 2); return `<li${lv ? ` class="lv" style="margin-left:${lv*1.4}em"` : ""}>${mdInline(r.replace(/^\s*- /,""))}</li>`; }).join("") + "</ul>"); continue; }
+    if(/^\d+\. /.test(line)){ out.push("<ol>" + take(/^\d+\. /).map(r=>`<li>${mdInline(r.replace(/^\d+\. /,""))}</li>`).join("") + "</ol>"); continue; }
+    const para = take(/^(?!\s*$)(?!#{2,3} )(?!\|)(?!>)(?!\s*- )(?!\d+\. ).+/);
+    out.push(`<p>${para.map(mdInline).join("<br>")}</p>`);
+  }
+  return out.join("");
+}
+let currentLessonIdx = null;
+function openArticle(courseId, idx){
+  const c = courses.find(x => x.id === courseId);
+  const l = c.lessons[idx];
+  currentCourseId = courseId; currentLessonIdx = idx;
+  document.getElementById("artKicker").textContent = (c.badge + (l.no ? " ・ " + l.no : "")).toUpperCase();
+  document.getElementById("artTitle").textContent = l.t;
+  document.getElementById("artMeta").textContent = c.title + (l.d ? "　／　目安 " + l.d : "");
+  const goal = document.getElementById("artGoal"), body = document.getElementById("artBody");
+  goal.hidden = true; body.className = "article no-goal";
+  body.innerHTML = '<div class="art-loading">読み込み中…</div>';
+  // 前後ナビ（公開中のレッスンだけを辿る）
+  const nav = (dir) => { for(let j = idx + dir; j >= 0 && j < c.lessons.length; j += dir){ const x = c.lessons[j]; if(x.open && (x.doc || x.video || x.url)) return j; } return null; };
+  [["artPrev",-1],["artNext",1]].forEach(([id,dir]) => {
+    const j = nav(dir), b = document.getElementById(id);
+    b.style.visibility = j === null ? "hidden" : "visible";
+    b.classList.toggle("is-none", j === null);
+    b.onclick = () => playLesson(courseId, j);
+  });
+  refreshDoneBtn();
+  showView("lesson");
+  loadDoc(l.doc).then(d => {
+    if(d.goal){ goal.hidden = false; goal.innerHTML = "<b>このレッスンのゴール</b>" + mdInline(d.goal); body.className = "article"; }
+    body.innerHTML = md(d.body);
+  }).catch(() => { body.innerHTML = '<div class="art-loading">教材ファイルを読み込めませんでした（content/' + esc(l.doc) + '.js）</div>'; });
+}
+
+/* ===== レッスンの完了管理 ===== */
+const LS_DONE = "aidl_done_v1";
+let doneMap = JSON.parse(localStorage.getItem(LS_DONE) || "{}");
+function doneKey(cid, l){ return cid + ":" + (l.doc || l.t); }
+function isDone(cid, l){ return !!doneMap[doneKey(cid, l)]; }
+function refreshDoneBtn(){
+  const c = courses.find(x => x.id === currentCourseId), l = c.lessons[currentLessonIdx];
+  const b = document.getElementById("artDone");
+  b.textContent = isDone(c.id, l) ? "✓ 完了済み（取り消す）" : "このレッスンを完了にする";
+  b.className = isDone(c.id, l) ? "btn ghost" : "btn";
+}
+function toggleDone(){
+  const c = courses.find(x => x.id === currentCourseId), l = c.lessons[currentLessonIdx];
+  const k = doneKey(c.id, l);
+  if(doneMap[k]) delete doneMap[k]; else doneMap[k] = Date.now();
+  localStorage.setItem(LS_DONE, JSON.stringify(doneMap));
+  refreshDoneBtn();
+}
+
+/* ===== データの書き出し・読み込み・リセット（管理者） ===== */
+function exportData(){
+  const blob = new Blob([JSON.stringify(courses, null, 2)], {type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "aidl-courses.json";
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+function importData(input){
+  const file = input.files[0];
+  if(!file) return;
+  const r = new FileReader();
+  r.onload = () => {
+    try{
+      const data = JSON.parse(r.result);
+      if(!Array.isArray(data)) throw new Error();
+      courses = data;
+      persistCourses(); renderCourses();
+      alert("講座データを読み込みました");
+    }catch(e){ alert("読み込めませんでした。書き出したJSONファイルを指定してください。"); }
+    input.value = "";
+  };
+  r.readAsText(file);
+}
+function resetCourses(){
+  if(!confirm("講座データを初期状態に戻しますか？（編集内容は消えます）")) return;
+  localStorage.removeItem(LS_COURSES);
+  courses = loadCourses();
+  renderCourses();
+}
+
+/* ===== サクセスラーニング ===== */
+function refreshCourseSelect(){
+  document.getElementById("fCourse").innerHTML =
+    '<option value="">選択しない（自分でタスクを書く）</option>' +
+    courses.map(c => `<option value="${c.id}">${esc(c.title)}（全${c.lessons.length}回）</option>`).join("");
+}
+function renderPlans(){
+  const grid = document.getElementById("planGrid");
+  document.getElementById("planEmpty").hidden = plans.length > 0;
+  const today = new Date(); today.setHours(0,0,0,0);
+  grid.innerHTML = plans.map(p => {
+    const done = p.tasks.filter(t => t.done).length;
+    const pct = p.tasks.length ? Math.round(done / p.tasks.length * 100) : 0;
+    let dl = "";
+    if(p.deadline){
+      const d = new Date(p.deadline + "T00:00:00");
+      const days = Math.round((d - today) / 86400000);
+      const over = days < 0 && pct < 100;
+      dl = `<div class="deadline ${over ? "over" : ""}">🎯 ${p.deadline.replaceAll("-","/")} まで${
+        pct === 100 ? "（達成！）" : days >= 0 ? `（あと${days}日）` : `（${-days}日超過）`}</div>`;
+    }
+    return `
+    <article class="plan-card">
+      <h3>${esc(p.title)}</h3>
+      ${p.goal ? `<div class="goal">${esc(p.goal)}</div>` : ""}
+      ${dl}
+      <div class="prog-wrap">
+        <div class="prog-label"><span>進捗 ${done} / ${p.tasks.length} タスク</span><b>${pct}%</b></div>
+        <div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div>
+      </div>
+      ${p.tasks.map((t,i) => `
+        <label class="task ${t.done ? "done" : ""}">
+          <input type="checkbox" ${t.done ? "checked" : ""} onchange="toggleTask('${p.id}',${i})">
+          <span>${esc(t.name)}</span>
+        </label>`).join("")}
+      <div class="plan-actions">
+        <button class="btn ghost small" onclick="openModal('${p.id}')">編集</button>
+        <button class="btn danger small" onclick="deletePlan('${p.id}')">削除</button>
+      </div>
+    </article>`;
+  }).join("");
+}
+function toggleTask(pid, i){
+  const p = plans.find(x => x.id === pid);
+  p.tasks[i].done = !p.tasks[i].done;
+  persistPlans(); renderPlans();
+}
+function deletePlan(pid){
+  if(!confirm("この学習計画を削除しますか？")) return;
+  plans = plans.filter(x => x.id !== pid);
+  persistPlans(); renderPlans();
+}
+
+/* ===== 学習計画モーダル ===== */
+function openModal(pid){
+  editingId = pid || null;
+  const p = pid ? plans.find(x => x.id === pid) : null;
+  document.getElementById("modalTitle").textContent = p ? "学習計画を編集" : "新しい学習計画";
+  document.getElementById("fTitle").value = p ? p.title : "";
+  document.getElementById("fGoal").value = p ? p.goal : "";
+  document.getElementById("fDeadline").value = p ? p.deadline : "";
+  document.getElementById("fCourse").value = "";
+  document.getElementById("taskInputs").innerHTML = "";
+  (p ? p.tasks.map(t => t.name) : ["",""]).forEach(v => addTaskRow(v));
+  document.getElementById("overlay").classList.add("show");
+}
+function closeModal(id){ document.getElementById(id || "overlay").classList.remove("show"); }
+function addTaskRow(value){
+  const row = document.createElement("div");
+  row.className = "task-input-row";
+  row.innerHTML = `<input type="text" placeholder="例：レッスン1を視聴する" value="${(value||"").replace(/"/g,"&quot;")}">
+    <button title="削除" onclick="this.parentElement.remove()">×</button>`;
+  document.getElementById("taskInputs").appendChild(row);
+}
+function importCourseTasks(){
+  const id = document.getElementById("fCourse").value;
+  if(!id) return;
+  const c = courses.find(x => x.id === id);
+  document.getElementById("taskInputs").innerHTML = "";
+  c.lessons.forEach((l,i) => addTaskRow(`第${i+1}回：${l.t}`));
+  if(!document.getElementById("fTitle").value)
+    document.getElementById("fTitle").value = `${c.title} を修了する`;
+}
+function savePlan(){
+  const title = document.getElementById("fTitle").value.trim();
+  if(!title){ alert("計画のタイトルを入力してください"); return; }
+  const names = [...document.querySelectorAll("#taskInputs input")]
+    .map(i => i.value.trim()).filter(Boolean);
+  if(!names.length){ alert("タスクを1つ以上入力してください"); return; }
+  const old = editingId ? plans.find(x => x.id === editingId) : null;
+  const tasks = names.map(n => {
+    const prev = old && old.tasks.find(t => t.name === n);
+    return { name:n, done: prev ? prev.done : false };
+  });
+  const data = {
+    id: editingId || "p" + Date.now(),
+    title,
+    goal: document.getElementById("fGoal").value.trim(),
+    deadline: document.getElementById("fDeadline").value,
+    tasks
+  };
+  if(old) plans[plans.indexOf(old)] = data; else plans.push(data);
+  persistPlans(); closeModal("overlay"); renderPlans();
+}
+
+/* ===== 初期化 ===== */
+["overlay","courseOverlay","lessonOverlay"].forEach(id => {
+  document.getElementById(id).addEventListener("click", e => { if(e.target.id === id) closeModal(id); });
+});
+document.getElementById("videoOverlay").addEventListener("click", e => { if(e.target.id === "videoOverlay") closeVideo(); });
+document.addEventListener("keydown", e => { if(e.key === "Escape"){ closeVideo(); ["overlay","courseOverlay","lessonOverlay"].forEach(closeModal); } });
+applyAdminUI();
+renderCourses();
+</script>
+</body>
+</html>
